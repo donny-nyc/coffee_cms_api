@@ -1,0 +1,4 @@
+#!/bin/bash
+
+docker run -it --mount type=bind,source="$(pwd)",target=/usr/src/app \
+	node:18 bash -c "cd /usr/src/app && npm uninstall --save-dev $1"

@@ -1,18 +1,36 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import expressWinston from 'express-winston'
+import winston from 'winston'
 import { json } from 'body-parser';
 import { coffeeRouter } from './routes/coffee'
 
 const app = express();
 
-app.use(
-	cors({
-			origin: "*",
-	})
-);
+app.use(cors());
+
+app.use(expressWinston.logger({
+	transports: [
+		new winston.transports.Console()
+	],
+	format: winston.format.combine(
+		winston.format.colorize(),
+		winston.format.json()
+	)
+}));
 
 app.use(coffeeRouter);
+
+app.use(expressWinston.errorLogger({
+	transports: [
+		new winston.transports.Console()
+	],
+	format: winston.format.combine(
+		winston.format.colorize(),
+		winston.format.json()
+	)
+}));
 
 const options = {
   autoIndex: false, // Don't build indexes

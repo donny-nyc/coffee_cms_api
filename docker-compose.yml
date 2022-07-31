@@ -4,12 +4,12 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    ports:
-      - 43210:3000
     volumes:
       - type: bind
-        source: $PWD
-        target: /usr/src/app
+        source: $PWD/src
+        target: /usr/src/app/src
+    networks:
+      - espresso
   mongo:
     image: 'mongo:4.4.14'
     environment:
@@ -17,3 +17,10 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
     ports:
       - 27017:27017
+    volumes: 
+      - /data/db
+    networks:
+      - espresso
+networks:
+  espresso:
+    external: true

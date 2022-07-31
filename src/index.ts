@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import expressWinston from 'express-winston'
 import winston from 'winston'
 import { json } from 'body-parser';
-import { coffeeRouter } from './routes/coffee'
+import { productRouter } from './products/routes/products'
 
 const app = express();
 
@@ -20,7 +20,7 @@ app.use(expressWinston.logger({
 	)
 }));
 
-app.use(coffeeRouter);
+app.use('/api/v1/products', productRouter);
 
 app.use(expressWinston.errorLogger({
 	transports: [
@@ -40,7 +40,7 @@ const options = {
   family: 4 // Use IPv4, skip trying IPv6
 };
 
-mongoose.connect('mongodb://test:pass@mongo:27017/coffee_test', options).then(() => {
+mongoose.connect('mongodb://test:pass@mongo:27017/products', options).then(() => {
 	// tslint:disable-next-line:no-console
 	console.log("connected to mongo");
 }).catch((error: any) => {

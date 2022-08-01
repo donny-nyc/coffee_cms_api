@@ -19,6 +19,24 @@ router.get('/', [],  async (_: Request, res: Response) => {
 	}
 });
 
+router.get('/:id', async(req: Request, res: Response) => {
+  let id: string = req.params.id;
+
+  try {
+
+    const product: Product | null = await Product.findById(id);
+
+    if(product) {
+      return res.status(200).send(product);
+    } else {
+     return res.status(404).send({"message": "Not Found"});
+    }
+  } catch(err: any) {
+    console.error(err);
+    return res.status(500).send(err);
+  }
+});
+
 router.post('/', jsonParser, async (req: Request, res: Response) => {
 	const { name, description, categoryId, attributes } = req.body;
 

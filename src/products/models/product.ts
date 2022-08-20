@@ -4,7 +4,7 @@ interface IProduct {
 	name: string;
 	description: string;
   categoryId: number;
-	attributes: {};
+  attributes: {name: string, value: any}[]
 };
 
 interface ProductModelInterface extends mongoose.Model<Product> {
@@ -15,7 +15,7 @@ interface Product extends mongoose.Document {
 	name: string;
 	description: string;
   categoryId: number;
-	attributes: {};
+  attributes: {name: string, value: any}[];
 };
 
 const productSchema = new mongoose.Schema({

@@ -23,7 +23,6 @@ router.get('/:id', async(req: Request, res: Response) => {
   let id: string = req.params.id;
 
   try {
-
     const product: Product | null = await Product.findById(id);
 
     if(product) {
@@ -41,16 +40,16 @@ router.post('/', jsonParser, async (req: Request, res: Response) => {
 	const { name, description, categoryId, attributes } = req.body;
 
 	try {
-		const coffee = Product.build({
+		const product = Product.build({
 			name,
 			description,
       categoryId,
 			attributes,
 		});
 
-		await coffee.save();
+		await product.save();
 
-		return res.status(201).send(coffee);
+		return res.status(201).send(product);
 	} catch (err: any) {
 		if(err.name === 'ValidationError') {
 			let errors : Record<string, string> = {};
@@ -64,6 +63,49 @@ router.post('/', jsonParser, async (req: Request, res: Response) => {
 
 		res.status(500).send("Unable to create record");
 	}
+});
+
+router.put('/:id', jsonParser, async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { name, description, categoryId, attributes } = req.body;
+
+  console.log('update req:', req.body);
+
+  try {
+    const product = await Product.findById(id);
+
+    if(!product) {
+      return res.status(404).send({
+        error: `Product ${id} not found`
+      });
+    }
+
+    product.name = name;
+    product.description = description;
+    product.categoryId = categoryId;
+    product.attributes = attributes;
+
+    await product.save();
+
+    return res.status(200).send(product);
+  } catch (err: any) {
+    if(err.name === 'ValidationError') {
+      let errors: Record<string, string> = {};
+
+      Object.keys(err.errors).forEach((key) => {
+        errors[key] = err.errors[key].message;
+      });
+
+      return res.status(400).send(errors);
+    }
+
+    console.log('unhandled error:', err);
+
+    res.status(500).json({
+      message: `Unable to update product - ${id}`,
+      error: err
+    });
+  }
 });
 
 router.delete('/remove_all', async (_: Request, res: Response) => {

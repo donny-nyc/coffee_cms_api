@@ -5,6 +5,7 @@ import expressWinston from 'express-winston'
 import winston from 'winston'
 import { json } from 'body-parser';
 import { productRouter } from './products/routes/products'
+import { categoryRouter } from './categories/routes/categories'
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(expressWinston.logger({
 }));
 
 app.use('/api/v1/products', productRouter);
+app.use('/api/v1/categories', categoryRouter);
 
 app.use(expressWinston.errorLogger({
 	transports: [

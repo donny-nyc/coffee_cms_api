@@ -1,9 +1,9 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
 interface IProduct {
 	name: string;
 	description: string;
-  categoryId: number;
+  categoryId: string;
   attributes: {name: string, value: any}[]
 };
 
@@ -14,7 +14,7 @@ interface ProductModelInterface extends mongoose.Model<Product> {
 interface Product extends mongoose.Document {
 	name: string;
 	description: string;
-  categoryId: number;
+  categoryId: string;
   attributes: {name: string, value: any}[];
 };
 
@@ -27,7 +27,7 @@ const productSchema = new mongoose.Schema({
 		type: String,
 	},
   categoryId: {
-    type: Number,
+    type: String,
     required: true
   },
 	attributes: mongoose.Schema.Types.Mixed,

@@ -8,10 +8,31 @@ const jsonParser = bodyParser.json();
 
 router.options('/products') // enable pre-flight options for POST
 
-router.get('/', [],  async (_: Request, res: Response) => {
+router.get('/', [],  async (req: Request, res: Response) => {
+  const page: number = Number(req.query.page) || 0;
+  const pageSize: number = Number(req.query.size) || 10;
+
+  const offset: number = page * pageSize;
+
+  if(page < 0 || pageSize < 0) {
+    console.warn('invalid offset (negative):', offset);
+    return res.status(400).json({
+      error: 'offset must not be negative:'
+    });
+  }
+
+  let totalProducts = 0;
+
+  Product.countDocuments({}, function(_: any, count: number) {
+    totalProducts = count;
+  });
+
 	try {
-		const products: Product[] = await Product.find({})
-		return res.status(200).send(products);
+		const products: Product[] = await Product.find({}).skip(offset).limit(pageSize);
+		return res.status(200).json({
+      total: totalProducts,
+      products
+    });
 	} catch (err: any) {
 		return res.status(500).send({
 		message: err.message
